@@ -1,0 +1,142 @@
+﻿@model RestaurantStore.Shared.Dashboard.DashboardDto
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<h1 class="mt-4">Dashboard</h1>
+
+@if (ViewBag.Error != null)
+{
+    <div class="alert alert-warning">
+        @ViewBag.Error
+    </div>
+}
+
+<div class="row mt-4">
+    <!-- Orders Summary -->
+    <div class="col-md-3">
+        <div class="card text-white bg-primary mb-3">
+            <div class="card-header">Today's Orders</div>
+            <div class="card-body">
+                <h5 class="card-title">@Model.RecentOrders</h5>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card text-white bg-warning mb-3">
+            <div class="card-header">Pending Orders</div>
+            <div class="card-body">
+                <h5 class="card-title">@Model.PendingOrders</h5>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card text-white bg-success mb-3">
+            <div class="card-header">Completed Orders</div>
+            <div class="card-body">
+                <h5 class="card-title">@Model.TotalUsers</h5>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card text-white bg-info mb-3">
+            <div class="card-header">Total Products</div>
+            <div class="card-body">
+                <h5 class="card-title">@Model.TotalProducts</h5>
+            </div>
+        </div>
+    </div>
+</div>
+
+<hr />
+
+<!-- Latest Orders Table -->
+<h3>Latest Orders</h3>
+<table class="table table-striped table-hover">
+    <thead>
+        <tr>
+            <th>Order ID</th>
+            <th>User</th>
+            <th>Total Price</th>
+            <th>Status</th>
+            <th>Created At</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.RecentOrders != null && Model.RecentOrders.Any())
+        {
+            foreach (var order in Model.RecentOrders)
+            {
+                <tr>
+                    <td>@order.OrderId</td>
+                    <td>@order.Username</td>
+                    <td>@order.TotalPrice.ToString("C")</td>
+                    <td>@order.Status</td>
+                    <td>@order.OrderDate.ToString("dd/MM/yyyy HH:mm")</td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="5" class="text-center">No orders available</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<hr />
+
+<!-- Quick Access Buttons -->
+<h3>Quick Access</h3>
+<div class="btn-group" role="group">
+    <a class="btn btn-primary" href="@Url.Action("Index", "Order", new { area = "Admin" })">Orders</a>
+    <a class="btn btn-success" href="@Url.Action("Index", "Product", new { area = "Admin" })">Items</a>
+    <a class="btn btn-success" href="@Url.Action("Index", "Category", new { area = "Admin" })">Category</a>
+    <a class="btn btn-warning" href="@Url.Action("Index", "Users", new { area = "Admin" })">Users</a>
+</div>
+
+ 
+<!-- في آخر الصفحة قبل </body> -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
+<script>
+    const connection = new signalR.HubConnectionBuilder()
+        .withUrl("https://localhost:7269/dashboardHub")
+        .withAutomaticReconnect()
+        .configureLogging(signalR.LogLevel.Information)
+        .build();
+
+    connection.on("ReceiveDashboardUpdate", function (data) {
+        console.log("📦 البيانات الواصلة:", data);
+
+        document.querySelector(".bg-primary .card-title").innerText = data.totalOrders;
+        document.querySelector(".bg-warning .card-title").innerText = data.pendingOrders;
+        document.querySelector(".bg-success .card-title").innerText = data.totalUsers;
+        document.querySelector(".bg-info .card-title").innerText = data.totalProducts;
+
+        const tbody = document.querySelector("table tbody");
+        tbody.innerHTML = "";
+        data.recentOrders.forEach(order => {
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+                    <td>${order.orderId}</td>
+                    <td>${order.username}</td>
+                    <td>${order.totalPrice.toFixed(2)}</td>
+                    <td>${order.status}</td>
+                    <td>${new Date(order.orderDate).toLocaleString()}</td>
+                `;
+            tbody.appendChild(tr);
+        });
+    });
+
+    connection.onreconnecting(() => console.warn("⚠️ جاري إعادة الاتصال..."));
+    connection.onreconnected(() => console.log("✅ تم إعادة الاتصال"));
+    connection.onclose(() => console.error("❌ الاتصال انقطع"));
+
+    connection.start()
+        .then(() => console.log("🚀 SignalR Connected"))
+        .catch(err => console.error("💥 فشل الاتصال:", err.toString()));
+</script>

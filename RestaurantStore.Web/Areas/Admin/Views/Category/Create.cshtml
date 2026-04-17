@@ -1,0 +1,235 @@
+﻿@model RestaurantStore.Shared.CategoryDto.ResponseCategoryDto;
+
+@{
+    ViewData["Title"] = "Create Category";
+}
+
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500&family=Syne:wght@600;700&display=swap" rel="stylesheet" />
+
+<style>
+    .cr-wrap {
+        font-family: 'DM Sans', sans-serif;
+        max-width: 560px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+    }
+
+    .cr-back {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        color: rgba(255,255,255,0.35);
+        font-size: 0.85rem;
+        text-decoration: none;
+        margin-bottom: 1.4rem;
+        transition: color .15s;
+    }
+
+        .cr-back:hover {
+            color: rgba(255,255,255,0.7);
+        }
+
+    .cr-card {
+        background: #0f1117;
+        border: 1px solid rgba(255,255,255,0.07);
+        border-radius: 20px;
+        overflow: hidden;
+    }
+
+    .cr-header {
+        background: linear-gradient(135deg, #1a1c27, #13151f);
+        border-bottom: 1px solid rgba(255,255,255,0.06);
+        padding: 1.8rem 2rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .cr-header-icon {
+        width: 46px;
+        height: 46px;
+        border-radius: 14px;
+        background: rgba(108,99,255,0.12);
+        border: 1px solid rgba(108,99,255,0.25);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .cr-header h2 {
+        font-family: 'Syne', sans-serif;
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: #f0f0f5;
+        margin: 0;
+    }
+
+    .cr-header p {
+        color: rgba(255,255,255,0.3);
+        font-size: 0.82rem;
+        margin: 2px 0 0;
+    }
+
+    .cr-body {
+        padding: 2rem;
+    }
+
+    .cr-group {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        margin-bottom: 1.2rem;
+    }
+
+    .cr-label {
+        font-size: 11px;
+        letter-spacing: .06em;
+        color: rgba(255,255,255,0.35);
+        text-transform: uppercase;
+    }
+
+    .cr-input, .cr-textarea {
+        background: rgba(255,255,255,0.04);
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 10px;
+        color: #e8e8f0;
+        padding: 10px 14px;
+        font-family: 'DM Sans', sans-serif;
+        font-size: 0.9rem;
+        transition: border-color .2s, background .2s;
+        outline: none;
+        width: 100%;
+    }
+
+        .cr-input::placeholder, .cr-textarea::placeholder {
+            color: rgba(255,255,255,0.18);
+        }
+
+        .cr-input:focus, .cr-textarea:focus {
+            border-color: rgba(108,99,255,0.55);
+            background: rgba(108,99,255,0.05);
+            color: #fff;
+        }
+
+    .cr-textarea {
+        resize: vertical;
+        min-height: 90px;
+    }
+
+    .cr-footer {
+        padding: 1.4rem 2rem;
+        background: rgba(255,255,255,0.02);
+        border-top: 1px solid rgba(255,255,255,0.05);
+        display: flex;
+        gap: 0.8rem;
+        justify-content: flex-end;
+        align-items: center;
+    }
+
+    .cr-error {
+        background: rgba(220,53,69,0.1);
+        border: 1px solid rgba(220,53,69,0.2);
+        border-radius: 10px;
+        color: #f87185;
+        padding: 10px 16px;
+        font-size: 0.88rem;
+        margin-bottom: 1rem;
+    }
+
+    .btn-cancel {
+        background: transparent;
+        border: 1px solid rgba(255,255,255,0.1);
+        color: rgba(255,255,255,0.45);
+        border-radius: 10px;
+        padding: 9px 20px;
+        font-family: 'DM Sans', sans-serif;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: all .15s;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+        .btn-cancel:hover {
+            background: rgba(255,255,255,0.06);
+            color: #fff;
+        }
+
+    .btn-save {
+        background: linear-gradient(135deg, #6c63ff, #5b54e8);
+        color: #fff;
+        border: none;
+        border-radius: 10px;
+        padding: 10px 26px;
+        font-family: 'Syne', sans-serif;
+        font-weight: 600;
+        font-size: 0.9rem;
+        cursor: pointer;
+        box-shadow: 0 4px 20px rgba(108,99,255,0.3);
+        transition: all .2s;
+    }
+
+        .btn-save:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 28px rgba(108,99,255,0.45);
+            color: #fff;
+        }
+
+        .btn-save:active {
+            transform: scale(0.98);
+        }
+</style>
+
+<div class="cr-wrap">
+
+    <a href="@Url.Action("Index", "Category", new { area = "Admin" })" class="cr-back">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6" /></svg>
+        Back to Categories
+    </a>
+
+    <div class="cr-card">
+
+        <div class="cr-header">
+            <div class="cr-header-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#6c63ff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="3" width="18" height="18" rx="2" />
+                    <line x1="12" y1="8" x2="12" y2="16" />
+                    <line x1="8" y1="12" x2="16" y2="12" />
+                </svg>
+            </div>
+            <div>
+                <h2>Create New Category</h2>
+                <p>Fill in the details below to add a new category</p>
+            </div>
+        </div>
+
+        <form asp-action="Create" asp-controller="Category" asp-area="Admin" method="post">
+            <div class="cr-body">
+
+                @if (ViewBag.Error != null)
+                {
+                    <div class="cr-error">⚠ @ViewBag.Error</div>
+                }
+
+                <div class="cr-group">
+                    <label class="cr-label">Category Name</label>
+                    <input type="text" asp-for="Name" class="cr-input" placeholder="e.g. Burgers" />
+                </div>
+
+                <div class="cr-group">
+                    <label class="cr-label">Description <span style="color:rgba(255,255,255,0.2);font-size:10px;">(optional)</span></label>
+                    <textarea asp-for="Description" class="cr-textarea" placeholder="Brief description of this category..."></textarea>
+                </div>
+
+               
+
+            </div>
+
+            <div class="cr-footer">
+                <a href="@Url.Action("Index", "Category", new { area = "Admin" })" class="btn-cancel">Cancel</a>
+                <button type="submit" class="btn-save">✓ Create Category</button>
+            </div>
+        </form>
+
+    </div>
+</div>
